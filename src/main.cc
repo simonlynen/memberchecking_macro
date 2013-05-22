@@ -1,21 +1,18 @@
-
 #include "macro.h"
 #include <cstdlib>
 #include <boost/shared_ptr.hpp>
 #include "gtest/gtest.h"
 
-
-class SimpleEntry{
+class SimpleEntry {
  private:
   int key_;
   double value_;
  public:
-  void setRandom(){
+  void setRandom() {
     key_ = rand();
     value_ = static_cast<double>(rand()) / RAND_MAX;
   }
   bool operator==(const SimpleEntry& other) const {
-    std::cout<<__PRETTY_FUNCTION__<<std::endl;
     bool same = true;
     same = same && CHECKMEMBERSSAME(this, other, key_);
     same = same && CHECKMEMBERSSAME(this, other, value_);
@@ -23,7 +20,7 @@ class SimpleEntry{
   }
 };
 
-class ComplexEntry{
+class ComplexEntry {
  private:
   int key_;
   double value_;
@@ -34,27 +31,34 @@ class ComplexEntry{
 
  public:
 
-  ComplexEntry():pSimple_(NULL){
+  ComplexEntry(){
     key_ = 0;
     value_ = 0;
     pSimple_ = new SimpleEntry;
     pSharedSimple_.reset(new SimpleEntry);
   }
 
-  ~ComplexEntry(){
+  ~ComplexEntry() {
     delete pSimple_;
     pSimple_ = NULL;
   }
 
-  ComplexEntry operator=(const ComplexEntry& rhs){
+  ComplexEntry(const ComplexEntry& rhs) {
     key_ = rhs.key_;
     value_ = rhs.value_;
     pSimple_ = new SimpleEntry(*rhs.pSimple_);
-    pSharedSimple_.reset(new SimpleEntry(*rhs.pSharedSimple_.get()));
+    pSharedSimple_.reset(new SimpleEntry(*rhs.pSharedSimple_));
+  }
+
+  ComplexEntry operator=(const ComplexEntry& rhs) {
+    key_ = rhs.key_;
+    value_ = rhs.value_;
+    pSimple_ = new SimpleEntry(*rhs.pSimple_);
+    pSharedSimple_.reset(new SimpleEntry(*rhs.pSharedSimple_));
     return *this;
   }
 
-  void setRandom(){
+  void setRandom() {
     key_ = rand();
     value_ = static_cast<double>(rand()) / RAND_MAX;
     pSimple_->setRandom();
@@ -62,7 +66,6 @@ class ComplexEntry{
   }
 
   bool isBinaryEqual(const ComplexEntry& other) const {
-    std::cout<<__PRETTY_FUNCTION__<<std::endl;
     bool same = true;
     same = same && CHECKMEMBERSSAME(this, other, key_);
     same = same && CHECKMEMBERSSAME(this, other, value_);
@@ -92,10 +95,10 @@ TEST(General, TestClassesCopyCtorAssignWorks) {
   ASSERT_FALSE(e2.isBinaryEqual(e1));
 
   e2 = e1;
-  ComplexEntry e3(e1);
   ASSERT_TRUE(e2.isBinaryEqual(e1));
   ASSERT_TRUE(e1.isBinaryEqual(e2));
 
+  ComplexEntry e3(e1);
   ASSERT_TRUE(e3.isBinaryEqual(e1));
   ASSERT_TRUE(e1.isBinaryEqual(e3));
 
