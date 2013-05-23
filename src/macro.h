@@ -3,10 +3,10 @@
 #include <type_traits>
 #include <boost/shared_ptr.hpp>
 
-class ComplexEntry;
 
 namespace {
-
+//this template metaprogramming struct can tell us whether a class has a member
+//function isBinaryEqual
 template<typename T>
 class HasIsBinaryEqual {
   template<typename U, bool (U::*)(const T&) const> struct Check;
@@ -18,6 +18,8 @@ class HasIsBinaryEqual {
   };
 };
 
+//these structs are used to choose between isBinaryEqual function call and the
+//default operator==
 template<bool, typename A>
 struct isSame;
 
@@ -70,6 +72,7 @@ struct isSame<false, boost::shared_ptr<A> > {
 #define ASLAM_SERIALIZATION_MACRO_CHOOSER(...) \
     ASLAM_SERIALIZATION_GET_5TH_ARG(__VA_ARGS__, ASLAM_SERIALIZATION_CHECKMEMBERSSAME_IMPL,  ASLAM_SERIALIZATION_CHECKMEMBERSSAME_VERBOSE )
 
+//this is the visible macro name that the user should use
 #define CHECKMEMBERSSAME(...) ASLAM_SERIALIZATION_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
 
