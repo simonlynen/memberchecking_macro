@@ -1,5 +1,5 @@
-#ifndef ASLAM_SERIALIZATION_MACROS_HPP
-#define ASLAM_SERIALIZATION_MACROS_HPP
+#ifndef SM_SERIALIZATION_MACROS_HPP
+#define SM_SERIALIZATION_MACROS_HPP
 
 #include <iostream>
 #include <boost/static_assert.hpp>
@@ -9,19 +9,20 @@
 #include <ostream>
 
 namespace {
+namespace {
 typedef char yes;
-typedef char (&no)[2];
+typedef int no;
 
 struct AnyT { template <class T> AnyT(const T &); };
 
 no operator << (const AnyT &, const AnyT &);
 no operator >> (const AnyT &, const AnyT &);
 
-
 template <class T> yes check(T const&);
 no check(no);
+}
 
-
+//this template metaprogramming struct can tell us if there is the operator<< defined somewhere
 template <typename StreamType, typename T>
 struct HasOStreamOperator {
   static StreamType & stream;
@@ -143,15 +144,15 @@ struct streamIf<false, A> {
 
 //this defines the default behaviour if no verbosity argument is given
 
-#define ASLAM_SERIALIZATION_CHECKSAME_IMPL(THIS, OTHER, VERBOSE) \
+#define SM_SERIALIZATION_CHECKSAME_IMPL(THIS, OTHER, VERBOSE) \
     (isSame<HasIsBinaryEqual<decltype(OTHER)>::value, decltype(OTHER) >::eval(THIS, OTHER)) ? true :\
         (VERBOSE ? (std::cout <<  "*** Validation failed on " << #OTHER << ": "<< \
             streamIf<HasOStreamOperator<std::ostream, decltype(OTHER)>::value, decltype(OTHER) >::eval(THIS) << \
-            " other " << streamIf<HasOStreamOperator<std::ostream, decltype(OTHER)>::value >::eval(OTHER) \
+            " other " << streamIf<HasOStreamOperator<std::ostream, decltype(OTHER)>::value, decltype(OTHER)>::eval(OTHER) \
             << " at " << __PRETTY_FUNCTION__ << \
             " In: " << __FILE__ << ":" << __LINE__ << std::endl << std::endl) && false : false)
 
-#define ASLAM_SERIALIZATION_CHECKMEMBERSSAME_IMPL(OTHER, MEMBER, VERBOSE) \
+#define SM_SERIALIZATION_CHECKMEMBERSSAME_IMPL(OTHER, MEMBER, VERBOSE) \
     (isSame<HasIsBinaryEqual<decltype(MEMBER)>::value, decltype(MEMBER) >::eval(this->MEMBER, OTHER.MEMBER)) ? true :\
         (VERBOSE ? (std::cout <<  "*** Validation failed on " << #MEMBER << ": "<< \
             streamIf<HasOStreamOperator<std::ostream, decltype(MEMBER)>::value, decltype(MEMBER) >::eval(this->MEMBER) << \
@@ -159,19 +160,19 @@ struct streamIf<false, A> {
             << " at " << __PRETTY_FUNCTION__ << \
             " In: " << __FILE__ << ":" << __LINE__ << std::endl << std::endl) && false : false)
 
-#define ASLAM_SERIALIZATION_CHECKSAME_VERBOSE(THIS, OTHER) ASLAM_SERIALIZATION_CHECKSAME_IMPL(THIS, OTHER, true)
-#define ASLAM_SERIALIZATION_CHECKMEMBERSSAME_VERBOSE(OTHER, MEMBER) ASLAM_SERIALIZATION_CHECKMEMBERSSAME_IMPL(OTHER, MEMBER, true)
+#define SM_SERIALIZATION_CHECKSAME_VERBOSE(THIS, OTHER) SM_SERIALIZATION_CHECKSAME_IMPL(THIS, OTHER, true)
+#define SM_SERIALIZATION_CHECKMEMBERSSAME_VERBOSE(OTHER, MEMBER) SM_SERIALIZATION_CHECKMEMBERSSAME_IMPL(OTHER, MEMBER, true)
 
-#define ASLAM_SERIALIZATION_GET_3RD_ARG(arg1, arg2, arg3, ...) arg3
-#define ASLAM_SERIALIZATION_GET_4TH_ARG(arg1, arg2, arg3, arg4, ...) arg4
+#define SM_SERIALIZATION_GET_3RD_ARG(arg1, arg2, arg3, ...) arg3
+#define SM_SERIALIZATION_GET_4TH_ARG(arg1, arg2, arg3, arg4, ...) arg4
 
-#define ASLAM_SERIALIZATION_MACRO_CHOOSER_MEMBER_SAME(...) \
-    ASLAM_SERIALIZATION_GET_4TH_ARG(__VA_ARGS__, ASLAM_SERIALIZATION_CHECKMEMBERSSAME_IMPL,  ASLAM_SERIALIZATION_CHECKMEMBERSSAME_VERBOSE )
-#define ASLAM_SERIALIZATION_MACRO_CHOOSER_SAME(...) \
-    ASLAM_SERIALIZATION_GET_4TH_ARG(__VA_ARGS__, ASLAM_SERIALIZATION_CHECKSAME_IMPL,  ASLAM_SERIALIZATION_CHECKSAME_VERBOSE )
+#define SM_SERIALIZATION_MACRO_CHOOSER_MEMBER_SAME(...) \
+    SM_SERIALIZATION_GET_4TH_ARG(__VA_ARGS__, SM_SERIALIZATION_CHECKMEMBERSSAME_IMPL,  SM_SERIALIZATION_CHECKMEMBERSSAME_VERBOSE )
+#define SM_SERIALIZATION_MACRO_CHOOSER_SAME(...) \
+    SM_SERIALIZATION_GET_4TH_ARG(__VA_ARGS__, SM_SERIALIZATION_CHECKSAME_IMPL,  SM_SERIALIZATION_CHECKSAME_VERBOSE )
 
 //this is the visible macro name that the user should use
-#define CHECKMEMBERSSAME(...) ASLAM_SERIALIZATION_MACRO_CHOOSER_MEMBER_SAME(__VA_ARGS__)(__VA_ARGS__)
-#define CHECKSAME(...) ASLAM_SERIALIZATION_MACRO_CHOOSER_SAME(__VA_ARGS__)(__VA_ARGS__)
+#define SM_CHECKMEMBERSSAME(...) SM_SERIALIZATION_MACRO_CHOOSER_MEMBER_SAME(__VA_ARGS__)(__VA_ARGS__)
+#define SM_CHECKSAME(...) SM_SERIALIZATION_MACRO_CHOOSER_SAME(__VA_ARGS__)(__VA_ARGS__)
 
-#endif //ASLAM_SERIALIZATION_MACROS_HPP
+#endif //SM_SERIALIZATION_MACROS_HPP

@@ -13,8 +13,8 @@ class SimpleEntry {
   }
   bool operator==(const SimpleEntry& other) const {
     bool same = true;
-    same = same && CHECKMEMBERSSAME(other, key_);
-    same = same && CHECKMEMBERSSAME(other, value_);
+    same = same && SM_CHECKMEMBERSSAME(other, key_);
+    same = same && SM_CHECKMEMBERSSAME(other, value_);
     return same;
   }
   friend std::ostream& operator<<(std::ostream &os, const SimpleEntry& lhs);

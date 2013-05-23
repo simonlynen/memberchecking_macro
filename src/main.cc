@@ -22,22 +22,19 @@ TEST(General, TestClassesMacroWorks) {
   ComplexEntry e1, e2;
   e1.setRandom();
   e2.setRandom();
-;
 
-//  std::cout<<e1<<std::endl;
+  ASSERT_FALSE(SM_CHECKSAME(e1, e2));
+  ASSERT_FALSE(SM_CHECKSAME(e2, e1));
 
-//  ASSERT_FALSE(CHECKSAME(e1, e2));
-//  ASSERT_FALSE(CHECKSAME(e2, e1));
-//
-//  e2 = e1;
-//
-//  ASSERT_TRUE(CHECKSAME(e1, e2));
-//  ASSERT_TRUE(CHECKSAME(e2, e1));
-//
-//  ComplexEntry e3(e1);
-//
-//  ASSERT_TRUE(CHECKSAME(e1, e3));
-//  ASSERT_TRUE(CHECKSAME(e3, e1));
+  e2 = e1;
+
+  ASSERT_TRUE(SM_CHECKSAME(e1, e2));
+  ASSERT_TRUE(SM_CHECKSAME(e2, e1));
+
+  ComplexEntry e3(e1);
+
+  ASSERT_TRUE(SM_CHECKSAME(e1, e3));
+  ASSERT_TRUE(SM_CHECKSAME(e3, e1));
 
 }
 

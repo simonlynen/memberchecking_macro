@@ -49,10 +49,10 @@ class ComplexEntry {
 
   bool isBinaryEqual(const ComplexEntry& other) const {
     bool same = true;
-    same = same && CHECKMEMBERSSAME(other, key_);
-    same = same && CHECKMEMBERSSAME(other, value_);
-    same = same && CHECKMEMBERSSAME(other, pSimple_);
-    same = same && CHECKMEMBERSSAME(other, pSharedSimple_);
+    same = same && SM_CHECKMEMBERSSAME(other, key_);
+    same = same && SM_CHECKMEMBERSSAME(other, value_);
+    same = same && SM_CHECKMEMBERSSAME(other, pSimple_);
+    same = same && SM_CHECKMEMBERSSAME(other, pSharedSimple_);
     return same;
   }
 };
