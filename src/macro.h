@@ -12,10 +12,10 @@ namespace {
 typedef char yes;
 typedef char (&no)[2];
 
-struct anyx { template <class T> anyx(const T &); };
+struct AnyT { template <class T> AnyT(const T &); };
 
-no operator << (const anyx &, const anyx &);
-no operator >> (const anyx &, const anyx &);
+no operator << (const AnyT &, const AnyT &);
+no operator >> (const AnyT &, const AnyT &);
 
 
 template <class T> yes check(T const&);
@@ -97,10 +97,33 @@ struct streamIf<true, A> {
   }
 };
 
-
 template<typename A>
 struct streamIf<true, A*> {
   static std::string eval(const A* rhs) {
+    if(!rhs){
+      return "NULL";
+    }
+    std::stringstream ss;
+    ss << *rhs;
+    return ss.str();
+  }
+};
+
+template<typename A>
+struct streamIf<true, boost::shared_ptr<A> > {
+  static std::string eval(const boost::shared_ptr<A>& rhs) {
+    if(!rhs){
+      return "NULL";
+    }
+    std::stringstream ss;
+    ss << *rhs;
+    return ss.str();
+  }
+};
+
+template<typename A>
+struct streamIf<true, boost::shared_ptr<const A> > {
+  static std::string eval(const boost::shared_ptr<const A>& rhs) {
     if(!rhs){
       return "NULL";
     }
