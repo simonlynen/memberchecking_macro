@@ -56,8 +56,20 @@ struct isSame<false, boost::shared_ptr<A> > {
 };
 }
 
-#define CHECKMEMBERSSAME(THIS, OTHER, MEMBER) \
+//this defines the default behaviour if no verbosity argument is given
+#define ASLAM_SERIALIZATION_CHECKMEMBERSSAME_VERBOSE(THIS, OTHER, MEMBER) ASLAM_SERIALIZATION_CHECKMEMBERSSAME_IMPL(THIS, OTHER, MEMBER, true)
+
+#define ASLAM_SERIALIZATION_CHECKMEMBERSSAME_IMPL(THIS, OTHER, MEMBER, VERBOSE) \
     (isSame<HasIsBinaryEqual<decltype(MEMBER)>::value, decltype(MEMBER) >::eval(THIS->MEMBER, OTHER.MEMBER)) ? true :\
-        !(std::cout <<  "Validation failed on " << #MEMBER << ": "<< this->MEMBER << \
+        (VERBOSE ? (std::cout <<  "*** Validation failed on " << #MEMBER << ": "<< this->MEMBER << \
               " other " << OTHER.MEMBER << " at " << __PRETTY_FUNCTION__ << \
-              " In: " << __FILE__ << ":" << __LINE__ << std::endl);
+              " In: " << __FILE__ << ":" << __LINE__ << std::endl<<std::endl) && false : false);
+
+
+#define ASLAM_SERIALIZATION_GET_5TH_ARG(arg1, arg2, arg3, arg4, arg5, ...) arg5
+#define ASLAM_SERIALIZATION_MACRO_CHOOSER(...) \
+    ASLAM_SERIALIZATION_GET_5TH_ARG(__VA_ARGS__, ASLAM_SERIALIZATION_CHECKMEMBERSSAME_IMPL,  ASLAM_SERIALIZATION_CHECKMEMBERSSAME_VERBOSE )
+
+#define CHECKMEMBERSSAME(...) ASLAM_SERIALIZATION_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+
+
