@@ -40,11 +40,6 @@ class ComplexEntry {
     return *this;
   }
 
-  std::ostream& operator<<(std::ostream& str) const {
-    str<<"key_: "<<key_<<" value_: "<<value_;
-    return str;
-  }
-
   void setRandom() {
     key_ = rand();
     value_ = static_cast<double>(rand()) / RAND_MAX;

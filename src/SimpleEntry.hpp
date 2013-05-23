@@ -17,4 +17,11 @@ class SimpleEntry {
     same = same && CHECKMEMBERSSAME(other, value_);
     return same;
   }
+  friend std::ostream& operator<<(std::ostream &os, const SimpleEntry& lhs);
 };
+
+std::ostream& operator<<(std::ostream &os, const SimpleEntry& lhs)
+{
+  os << lhs.key_ << " " << lhs.value_;
+  return os;
+}

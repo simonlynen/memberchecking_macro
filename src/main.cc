@@ -17,6 +17,30 @@ TEST(General, TestClassesComparisonWorks) {
   ASSERT_FALSE(e2.isBinaryEqual(e1));
 }
 
+
+TEST(General, TestClassesMacroWorks) {
+  ComplexEntry e1, e2;
+  e1.setRandom();
+  e2.setRandom();
+;
+
+//  std::cout<<e1<<std::endl;
+
+//  ASSERT_FALSE(CHECKSAME(e1, e2));
+//  ASSERT_FALSE(CHECKSAME(e2, e1));
+//
+//  e2 = e1;
+//
+//  ASSERT_TRUE(CHECKSAME(e1, e2));
+//  ASSERT_TRUE(CHECKSAME(e2, e1));
+//
+//  ComplexEntry e3(e1);
+//
+//  ASSERT_TRUE(CHECKSAME(e1, e3));
+//  ASSERT_TRUE(CHECKSAME(e3, e1));
+
+}
+
 TEST(General, TestClassesCopyCtorAssignWorks) {
   ComplexEntry e1, e2;
   e1.setRandom();
@@ -42,8 +66,12 @@ TEST(General, TestClassHasMethodDeduction) {
 }
 
 TEST(General, TestClassHasStreamOperator) {
-  ASSERT_EQ(HasOStreamOperator<ComplexEntry>::value, 1);
-  ASSERT_EQ(HasOStreamOperator<SimpleEntry>::value, 0);
+  ComplexEntry e1;
+  e1.setRandom();
+  streamIf<HasOStreamOperator<std::ostream, decltype(e1)>::value, decltype(e1) >::eval(e1);
+
+  ASSERT_EQ((HasOStreamOperator<std::ostream, SimpleEntry>::value), 1);
+  ASSERT_EQ((HasOStreamOperator<std::ostream, ComplexEntry>::value), 0);
 }
 
 int main(int argc, char **argv) {
