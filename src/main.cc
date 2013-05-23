@@ -1,79 +1,11 @@
-#include "macro.h"
 #include <cstdlib>
 #include <boost/shared_ptr.hpp>
 #include "gtest/gtest.h"
 
-class SimpleEntry {
- private:
-  int key_;
-  double value_;
- public:
-  void setRandom() {
-    key_ = rand();
-    value_ = static_cast<double>(rand()) / RAND_MAX;
-  }
-  bool operator==(const SimpleEntry& other) const {
-    bool same = true;
-    same = same && CHECKMEMBERSSAME(this, other, key_);
-    same = same && CHECKMEMBERSSAME(this, other, value_);
-    return same;
-  }
-};
+#include "macro.h"
+#include "SimpleEntry.hpp"
+#include "ComplexEntry.hpp"
 
-class ComplexEntry {
- private:
-  int key_;
-  double value_;
-  SimpleEntry* pSimple_;
-  boost::shared_ptr<SimpleEntry> pSharedSimple_;
-
-  bool operator==(const ComplexEntry& other) const;
-
- public:
-
-  ComplexEntry(){
-    key_ = 0;
-    value_ = 0;
-    pSimple_ = new SimpleEntry;
-    pSharedSimple_.reset(new SimpleEntry);
-  }
-
-  ~ComplexEntry() {
-    delete pSimple_;
-    pSimple_ = NULL;
-  }
-
-  ComplexEntry(const ComplexEntry& rhs) {
-    key_ = rhs.key_;
-    value_ = rhs.value_;
-    pSimple_ = new SimpleEntry(*rhs.pSimple_);
-    pSharedSimple_.reset(new SimpleEntry(*rhs.pSharedSimple_));
-  }
-
-  ComplexEntry operator=(const ComplexEntry& rhs) {
-    key_ = rhs.key_;
-    value_ = rhs.value_;
-    pSimple_ = new SimpleEntry(*rhs.pSimple_);
-    pSharedSimple_.reset(new SimpleEntry(*rhs.pSharedSimple_));
-    return *this;
-  }
-
-  void setRandom() {
-    key_ = rand();
-    value_ = static_cast<double>(rand()) / RAND_MAX;
-    pSimple_->setRandom();
-    pSharedSimple_->setRandom();
-  }
-
-  bool isBinaryEqual(const ComplexEntry& other) const {
-    bool same = true;
-    same = same && CHECKMEMBERSSAME(this, other, key_);
-    same = same && CHECKMEMBERSSAME(this, other, value_);
-    same = same && CHECKMEMBERSSAME(this, other, pSimple_);
-    same = same && CHECKMEMBERSSAME(this, other, pSharedSimple_);
-    return same;
-  }
-};
 
 TEST(General, TestClassesComparisonWorks) {
   ComplexEntry e1, e2;

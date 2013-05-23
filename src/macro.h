@@ -1,3 +1,6 @@
+#ifndef ASLAM_SERIALIZATION_MACROS_HPP
+#define ASLAM_SERIALIZATION_MACROS_HPP
+
 #include <iostream>
 #include <boost/static_assert.hpp>
 #include <type_traits>
@@ -76,3 +79,4 @@ struct isSame<false, boost::shared_ptr<A> > {
 #define CHECKMEMBERSSAME(...) ASLAM_SERIALIZATION_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
 
+#endif //ASLAM_SERIALIZATION_MACROS_HPP
