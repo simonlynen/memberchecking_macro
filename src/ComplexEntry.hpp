@@ -40,6 +40,11 @@ class ComplexEntry {
     return *this;
   }
 
+  std::ostream& operator<<(std::ostream& str) const {
+    str<<"key_: "<<key_<<" value_: "<<value_;
+    return str;
+  }
+
   void setRandom() {
     key_ = rand();
     value_ = static_cast<double>(rand()) / RAND_MAX;
@@ -49,10 +54,10 @@ class ComplexEntry {
 
   bool isBinaryEqual(const ComplexEntry& other) const {
     bool same = true;
-    same = same && CHECKMEMBERSSAME(this, other, key_);
-    same = same && CHECKMEMBERSSAME(this, other, value_);
-    same = same && CHECKMEMBERSSAME(this, other, pSimple_);
-    same = same && CHECKMEMBERSSAME(this, other, pSharedSimple_);
+    same = same && CHECKMEMBERSSAME(other, key_);
+    same = same && CHECKMEMBERSSAME(other, value_);
+    same = same && CHECKMEMBERSSAME(other, pSimple_);
+    same = same && CHECKMEMBERSSAME(other, pSharedSimple_);
     return same;
   }
 };

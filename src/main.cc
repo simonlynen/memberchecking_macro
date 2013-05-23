@@ -41,6 +41,10 @@ TEST(General, TestClassHasMethodDeduction) {
   ASSERT_EQ(HasIsBinaryEqual<SimpleEntry>::value, 0);
 }
 
+TEST(General, TestClassHasStreamOperator) {
+  ASSERT_EQ(HasOStreamOperator<ComplexEntry>::value, 1);
+  ASSERT_EQ(HasOStreamOperator<SimpleEntry>::value, 0);
+}
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

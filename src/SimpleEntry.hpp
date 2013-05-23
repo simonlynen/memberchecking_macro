@@ -13,8 +13,8 @@ class SimpleEntry {
   }
   bool operator==(const SimpleEntry& other) const {
     bool same = true;
-    same = same && CHECKMEMBERSSAME(this, other, key_);
-    same = same && CHECKMEMBERSSAME(this, other, value_);
+    same = same && CHECKMEMBERSSAME(other, key_);
+    same = same && CHECKMEMBERSSAME(other, value_);
     return same;
   }
 };
